@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Ouro</title>
+    <title>Painel de Ouro com Efeito Pisca-Pisca</title>
     <style>
         body {
             background-image: url('https://lh3.googleusercontent.com/d/1aZkNtHRKeVqDytyKIFauJ9TqPyFSAsv3');
@@ -31,6 +31,7 @@
             background-color: rgba(33, 33, 33, 0.9);
             color: #ddd;
             position: relative;
+            animation: blink 1s infinite;
         }
         .payment-info {
             width: 80%;
@@ -50,6 +51,7 @@
             color: #ddd;
             border: 2px solid #00ff0c;
             border-radius: 5px;
+			animation: blink 1s infinite;
         }
         label {
             font-weight: bold;
@@ -71,6 +73,7 @@
             color: white;
             cursor: pointer;
             font-size: 1em;
+			
         }
         .invisible-button {
             position: absolute;
@@ -91,6 +94,14 @@
             border-radius: 50%;
             opacity: 0.8;
             pointer-events: none; /* Para que não interfira com cliques */
+        }
+
+        @keyframes blink {
+            0% { border-color: green; }
+            25% { border-color: blue; }
+            50% { border-color: red; }
+            75% { border-color: orange; }
+            100% { border-color: green; }
         }
     </style>
     <script>
@@ -206,7 +217,7 @@
         }
 
         // Chama a função para criar flocos de neve a cada 300ms
-        setInterval(createSnowflake, 100);
+        setInterval(createSnowflake, 300);
 
         window.onload = function() {
             document.getElementById('quantidadeOuro').value = 0;
