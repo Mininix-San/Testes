@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Ouro</title>
+    <style>
+        body {
+            background-image: url('https://lh3.googleusercontent.com/d/1aZkNtHRKeVqDytyKIFauJ9TqPyFSAsv3');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            color: #ddd;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            overflow: hidden; /* Para evitar barras de rolagem */
+        }
+        .panel, .payment-info {
+            width: 22%;
+            padding: 20px;
+            border: 2px solid #00ff0c;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            margin: 20px;
+            display: inline-block;
+            vertical-align: top;
+            background-color: rgba(33, 33, 33, 0.9);
+            color: #ddd;
+            position: relative;
+        }
+        .payment-info {
+            width: 80%;
+            margin: 20px;
+        }
+        h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #ecff00;
+        }
+        input[type="number"], input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #444;
+            color: #ddd;
+            border: 2px solid #00ff0c;
+            border-radius: 5px;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+            color: #ecff00;
+        }
+        p {
+            margin: 10px 0;
+            padding: 0;
+            color: #ecff00;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff0000;
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .invisible-button {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Estilos para flocos de neve */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            pointer-events: none; /* Para que não interfira com cliques */
+        }
+    </style>
+    <script>
+        let goldRateBase = 33.00;
+        let goldRateD = 5.55;
+        let listaOuroGlobal = [];
+
+        function updateOuroCalculations() {
+            const quantidade = parseInt(document.getElementById('quantidadeOuro').value) || 0;
+            let goldRateR = goldRateBase;
+
+            if (quantidade >= 10000) {
+                goldRateR = 32.00;
+            }
+
+            if (quantidade >= 20000) {
+                goldRateR = 32.00;
+            }
+
+            const totalR = (quantidade / 1000) * goldRateR;
+            const totalD = (quantidade / 1000) * goldRateD;
+            listaOuroGlobal = calcularListaOuro(quantidade);
+
+            document.getElementById('totalROuro').innerText = totalR.toFixed(2);
+            document.getElementById('totalDOuro').innerText = totalD.toFixed(2);
+            document.getElementById('quantidadeAnunciada').innerText = listaOuroGlobal.join(', ');
+        }
+
+        function calcularListaOuro(quantidade) {
+            const quantidadeAnunciada = Math.floor(quantidade + (quantidade * 5.3 / 100));
+            let divisao;
+
+            if (quantidade >= 20000) {
+                divisao = Math.ceil(quantidade / 5000);
+            } else {
+                divisao = Math.ceil(quantidade / 2500);
+            }
+
+            return dividirEmPartes(quantidadeAnunciada, divisao, quantidade);
+        }
+
+        function dividirEmPartes(total, partes, quantidade) {
+            let min, max;
+
+            if (quantidade >= 20000) {
+                min = Math.floor(total / partes * 0.9);
+                max = Math.ceil(total / partes * 1.1);
+            } else {
+                min = Math.floor(total / partes * 0.85);
+                max = Math.ceil(total / partes * 1.15);
+            }
+
+            let resultado = [];
+            let soma = 0;
+
+            for (let i = 0; i < partes - 1; i++) {
+                const valor = Math.floor(Math.random() * (max - min + 1)) + min;
+
+                if (soma + valor >= total) {
+                    resultado.push(total - soma);
+                    return resultado;
+                }
+
+                resultado.push(valor);
+                soma += valor;
+            }
+
+            const ultimaParte = total - soma;
+
+            if (ultimaParte > 0) {
+                resultado.push(ultimaParte);
+            } else {
+                resultado.push(min);
+            }
+
+            return resultado;
+        }
+
+        function copyTotalsToClipboard() {
+            const totalR = document.getElementById('totalROuro').innerText;
+            const totalD = document.getElementById('totalDOuro').innerText;
+            const quantidadeAnunciada = document.getElementById('quantidadeAnunciada').innerText;
+            const servidor = document.getElementById('servidor').value;
+            const textToCopy = `Servidor: ${servidor}\nTotal em R$: ${totalR}\nTotal em $: ${totalD}\nQuantidade de Ouro a anunciar: ${quantidadeAnunciada}`;
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => alert('Totais copiados para a área de transferência'))
+                .catch(err => alert('Erro ao copiar texto: ', err));
+        }
+
+        function copyMessageToClipboard() {
+            const textToCopy = `Ai você me encaminha o comprovante aqui na mensagem. Pois eu sou a irmã da Daoshi e não tô com acesso a conta ^^ 🌺~`;
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => alert('Mensagem copiada para a área de transferência'))
+                .catch(err => alert('Erro ao copiar texto: ', err));
+        }
+
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.style.width = Math.random() * 10 + 5 + 'px'; // Tamanho aleatório
+            snowflake.style.height = snowflake.style.width; // Mantém forma circular
+            snowflake.style.left = Math.random() * 100 + 'vw'; // Posição aleatória na horizontal
+            document.body.appendChild(snowflake);
+
+            // Animação de queda
+            const fallDuration = Math.random() * 3 + 2; // Dura entre 2 e 5 segundos
+            snowflake.style.animation = `fall ${fallDuration}s linear forwards`;
+
+            // Remove o floco de neve após a animação
+            snowflake.addEventListener('animationend', () => {
+                snowflake.remove();
+            });
+        }
+
+        // Chama a função para criar flocos de neve a cada 300ms
+        setInterval(createSnowflake, 100);
+
+        window.onload = function() {
+            document.getElementById('quantidadeOuro').value = 0;
+            updateOuroCalculations();
+        }
+    </script>
+    <style>
+        @keyframes fall {
+            to {
+                transform: translateY(100vh); /* Move para o fundo da tela */
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="invisible-button" onclick="copyMessageToClipboard()"></button>
+    <div class="panel">
+        <h2>🎁 Ouro 🎁</h2>
+        <label for="quantidadeOuro">Quantidade de Ouro:</label>
+        <input type="number" id="quantidadeOuro" value="0" oninput="updateOuroCalculations()"><br>
+        <label for="servidor">Servidor:</label>
+        <input type="text" id="servidor" placeholder="Insira o servidor"><br>
+        <p>Total em R$ = "R$<span id="totalROuro">0.00</span>"</p>
+        <p>Total em $ = "$<span id="totalDOuro">0.00</span>"</p>
+        <p>Quantidade de Ouro a anunciar: <span id="quantidadeAnunciada">0</span></p>
+        <button onclick="copyTotalsToClipboard()">Copiar Totais</button>
+    </div>
+    <div class="payment-info">
+        <h2>❄️ Informações de Pagamento ❄️</h2>
+        <p><strong>Pix:</strong> CELULAR 14988231270 Nome: Victoria Stefany</p>
+        <p><strong>Mercado Pago:</strong> <a href="https://link.mercadopago.com.br/ervindanada">https://link.mercadopago.com.br/ervindanada</a> preço será 6% mais caro.</p>
+        <p><strong>Binance:</strong> estrela203@hotmail.com</p>
+    </div>
+</body>
+</html>
